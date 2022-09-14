@@ -10,7 +10,8 @@ import "./styles.css"
 import ScrollableChat from './ScrollableChat'
 import io from 'socket.io-client'
 
-const ENDPOINT = "https://mern-chat-app-gb.herokuapp.com/"
+const ENDPOINT = "http://localhost:5000"
+//const ENDPOINT = "https://mern-chat-app-gb.herokuapp.com/"
 var socket, selectedChatCompare
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
@@ -42,7 +43,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             setMessages(data)
             setLoading(false)
 
-            socket.emit("join chat", selectedChat._id)
+            console.log("hello")
+            console.log(socket.emit("join chat", selectedChat._id))
         }
         catch (error) {
             toast({
@@ -62,12 +64,14 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         socket.on("connected", () => setSocketConnected(true))
         socket.on("typing", () => setIsTyping(true))
         socket.on("stop typing", () => setIsTyping(false))
+            // eslint-disable-next-line
     }, [])
 
     useEffect(() => {
         fetchMessages()
 
         selectedChatCompare = selectedChat
+            // eslint-disable-next-line
     }, [selectedChat])
 
     useEffect(() => {
@@ -134,6 +138,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         setTimeout(() => {
             var timeNow = new Date().getTime()
             var timeDiff = timeNow - lastTypingTime
+            console.log(timeDiff)
 
             if(timeDiff >= timerLength && typing) {
                 socket.emit("stop typing", selectedChat._id)
@@ -167,7 +172,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                             </div>) }
                         <FormControl onKeyDown={sendMessage} isRequired mt={3}>
                             {isTyping ? (<div>Correspondent is typing...</div>) : (<></>)}
-                            <Input variant="filled" bg="#E0E0E0" placeholder="Enter a message..." onChange={typingHandler} value={newMessage}/>
+                            <Input variant="filled" bg="#E0E0E0" placeholder="Enter a message..." onChange={typingHandler} value={newMessage || ''}/>
                         </FormControl>
                 </Box>
             </>
