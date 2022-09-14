@@ -10,8 +10,8 @@ import "./styles.css"
 import ScrollableChat from './ScrollableChat'
 import io from 'socket.io-client'
 
-const ENDPOINT = "http://localhost:5000"
-//const ENDPOINT = "https://mern-chat-app-gb.herokuapp.com/"
+//const ENDPOINT = "http://localhost:5000"
+const ENDPOINT = "https://mern-chat-app-gb.herokuapp.com/"
 var socket, selectedChatCompare
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
