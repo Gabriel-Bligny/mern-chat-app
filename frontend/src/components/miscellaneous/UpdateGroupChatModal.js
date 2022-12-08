@@ -19,8 +19,8 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
 
     const { selectedChat, setSelectedChat, user } = ChatState()
 
-    const handleAddUser =  async (user1) => {
-        if(selectedChat.users.find((u) => u._id === user1._id)){
+    const handleAddUser = async (user1) => {
+        if (selectedChat.users.find((u) => u._id === user1._id)) {
             toast({
                 title: "This user is already in this group!",
                 status: "error",
@@ -31,7 +31,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
             return;
         }
 
-        if (selectedChat.groupAdmin._id !== user._id){
+        if (selectedChat.groupAdmin._id !== user._id) {
             toast({
                 title: "Only admins can add people",
                 status: "error",
@@ -51,7 +51,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
                 }
             }
 
-            const { data } = await axios.put("/api/chat/groupadd", {chatId: selectedChat._id, userId: user1._id}, config)
+            const { data } = await axios.put("https://mern-chat-app-backend-22ov.onrender.com/api/chat/groupadd", { chatId: selectedChat._id, userId: user1._id }, config)
 
             setSelectedChat(data)
             setFetchAgain(!fetchAgain)
@@ -73,7 +73,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
 
     const handleRemove = async (user1) => {
 
-        if (selectedChat.groupAdmin._id !== user._id && user1._id !== user._id){
+        if (selectedChat.groupAdmin._id !== user._id && user1._id !== user._id) {
             toast({
                 title: "Only admins can remove people",
                 status: "error",
@@ -93,7 +93,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
                 }
             }
 
-            const { data } = await axios.put("/api/chat/groupremove", {chatId: selectedChat._id, userId: user1._id}, config)
+            const { data } = await axios.put("https://mern-chat-app-backend-22ov.onrender.com/api/chat/groupremove", { chatId: selectedChat._id, userId: user1._id }, config)
 
             user1._id === user._id ? setSelectedChat() : setSelectedChat(data)
             setFetchAgain(!fetchAgain)
@@ -114,9 +114,9 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
     }
 
     const handleRename = async () => {
-        if(!groupChatName) return
+        if (!groupChatName) return
 
-        try{
+        try {
             setRenameLoading(true)
 
             const config = {
@@ -125,8 +125,8 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
                 },
             }
 
-            const { data } = await axios.put("/api/chat/rename", {chatId: selectedChat._id, chatName: groupChatName}, config)
-            
+            const { data } = await axios.put("https://mern-chat-app-backend-22ov.onrender.com/api/chat/rename", { chatId: selectedChat._id, chatName: groupChatName }, config)
+
             setSelectedChat(data)
             setFetchAgain(!fetchAgain)
             setRenameLoading(false)
@@ -151,7 +151,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
         setSearch(query)
         if (!query) return
 
-        try{
+        try {
             setLoading(true)
 
             const config = {
@@ -160,8 +160,8 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
                 },
             }
 
-            const { data } = await axios.put(`/api/user?search=${search}`, config)
-            
+            const { data } = await axios.put(`https://mern-chat-app-backend-22ov.onrender.com/api/user?search=${search}`, config)
+
             setSearchResult(data)
             setLoading(false)
         }
@@ -181,44 +181,44 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
     }
 
     return (
-    <>
-        <IconButton display={{ base: "flex" }} icon={<ViewIcon />} onClick={onOpen} />
+        <>
+            <IconButton display={{ base: "flex" }} icon={<ViewIcon />} onClick={onOpen} />
 
-        <Modal isOpen={isOpen} onClose={onClose} isCentered>
-            <ModalOverlay />
-            <ModalContent>
-                <ModalHeader>{selectedChat.chatName}</ModalHeader>
-                <ModalCloseButton />
-                <ModalBody>
-                    <Box w="100%" display="flex" flexWrap="wrap" pb={3}>
-                        {selectedChat.users.map((u) => (
-                            <UserBadgeItem key={user._id} user={u} handleFunction={() => handleRemove(u)}/>
-                        ))}
-                    </Box>
-                    <FormControl display="flex">
-                        <Input placeholder="Chat Name" mb={3} value={groupChatName} onChange={(e) => setGroupChatName(e.target.value)}/>
-                        <Button variant="solid" colorScheme="teal" ml={1} isLoading={renameLoading} onClick={handleRename}>Update</Button>
-                    </FormControl>
-                    <FormControl>
-                        <Input placeholder="Add user to group" mb={1} onChange={(e) => handleSearch(e.target.value)}/>
-                    </FormControl>
-                    {loading ? (
-                        <Spinner size="lg" />
-                    ) : (
-                        searchResult?.map((user) => (
-                            <UserListItem key={user._id} user={user} handleFunction={() => handleAddUser(user)} />
-                        ))
-                    )}
+            <Modal isOpen={isOpen} onClose={onClose} isCentered>
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>{selectedChat.chatName}</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        <Box w="100%" display="flex" flexWrap="wrap" pb={3}>
+                            {selectedChat.users.map((u) => (
+                                <UserBadgeItem key={user._id} user={u} handleFunction={() => handleRemove(u)} />
+                            ))}
+                        </Box>
+                        <FormControl display="flex">
+                            <Input placeholder="Chat Name" mb={3} value={groupChatName} onChange={(e) => setGroupChatName(e.target.value)} />
+                            <Button variant="solid" colorScheme="teal" ml={1} isLoading={renameLoading} onClick={handleRename}>Update</Button>
+                        </FormControl>
+                        <FormControl>
+                            <Input placeholder="Add user to group" mb={1} onChange={(e) => handleSearch(e.target.value)} />
+                        </FormControl>
+                        {loading ? (
+                            <Spinner size="lg" />
+                        ) : (
+                            searchResult?.map((user) => (
+                                <UserListItem key={user._id} user={user} handleFunction={() => handleAddUser(user)} />
+                            ))
+                        )}
 
-                </ModalBody>
-                <ModalFooter>
-                    <Button colorScheme="blue" mr={3} onClick={onClose}>Close</Button>
-                </ModalFooter>
-            </ModalContent>
-        </Modal>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button colorScheme="blue" mr={3} onClick={onClose}>Close</Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
 
-    </>
-  )
+        </>
+    )
 }
 
 export default UpdateGroupChatModal

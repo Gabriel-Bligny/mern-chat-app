@@ -16,7 +16,7 @@ var socket, selectedChatCompare
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
-    const [messages, setMessages] = useState([]) 
+    const [messages, setMessages] = useState([])
     const [loading, setLoading] = useState(false)
     const [newMessage, setNewMessage] = useState()
     const [socketConnected, setSocketConnected] = useState(false)
@@ -29,7 +29,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     const fetchMessages = async () => {
         if (!selectedChat) return
 
-        try { 
+        try {
             const config = {
                 headers: {
                     Authorization: `Bearer ${user.token}`,
@@ -38,8 +38,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
             setLoading(true)
 
-            const { data } = await axios.get(`/api/message/${selectedChat._id}`, config)
-            
+            const { data } = await axios.get(`https://mern-chat-app-backend-22ov.onrender.com/api/message/${selectedChat._id}`, config)
+
             setMessages(data)
             setLoading(false)
 
@@ -64,19 +64,19 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         socket.on("connected", () => setSocketConnected(true))
         socket.on("typing", () => setIsTyping(true))
         socket.on("stop typing", () => setIsTyping(false))
-            // eslint-disable-next-line
+        // eslint-disable-next-line
     }, [])
 
     useEffect(() => {
         fetchMessages()
 
         selectedChatCompare = selectedChat
-            // eslint-disable-next-line
+        // eslint-disable-next-line
     }, [selectedChat])
 
     useEffect(() => {
         socket.on("message received", (newMessageReceived) => {
-            if (!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id){
+            if (!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id) {
                 // give notification
                 if (!notification.includes(newMessageReceived)) {
                     setNotification([newMessageReceived, ...notification])
@@ -89,20 +89,20 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     })
 
     const sendMessage = async (event) => {
-        if(event.key === "Enter" && newMessage) {
+        if (event.key === "Enter" && newMessage) {
 
             socket.emit("stop typing", selectedChat._id)
 
             try {
                 const config = {
                     headers: {
-                        "Content-type":"application/json",
+                        "Content-type": "application/json",
                         Authorization: `Bearer ${user.token}`
                     }
                 }
 
                 setNewMessage("")
-                const { data } = await axios.post("/api/message", { content: newMessage, chatId: selectedChat._id }, config)
+                const { data } = await axios.post("https://mern-chat-app-backend-22ov.onrender.com/api/message", { content: newMessage, chatId: selectedChat._id }, config)
                 console.log(data)
 
                 socket.emit("new message", data)
@@ -121,7 +121,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         }
     }
 
-    
+
 
     const typingHandler = (e) => {
         setNewMessage(e.target.value)
@@ -140,7 +140,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             var timeDiff = timeNow - lastTypingTime
             console.log(timeDiff)
 
-            if(timeDiff >= timerLength && typing) {
+            if (timeDiff >= timerLength && typing) {
                 socket.emit("stop typing", selectedChat._id)
                 setTyping(false)
             }
@@ -150,32 +150,32 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     return (
         <>
             {selectedChat ? (
-            <>
-                <Text fontSize={{ base: "28px", md: "30px" }} pb={3} px={2} w="100%" fontFamily="Work sans" display="flex" justifyContent={{ base: "space-between" }} alignItems="center">
-                    <IconButton display={{ base: "flex", md: "none" }} icon={<ArrowBackIcon />} onClick={() => setSelectedChat("")} />
-                    { !selectedChat.isGroupChat ? (
-                    <>
-                        {getSender(user, selectedChat.users)}
-                        <ProfileModal user={getSenderFull(user, selectedChat.users)} />
-                    </>
-                    ) : (
                 <>
-                    {selectedChat.chatName.toUpperCase()}
-                    <UpdateGroupChatModal fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} fetchMessages={fetchMessages}/>
-                </>) }
-                </Text>
-                <Box display="flex" flexDir="column" justifyContent="flex-end" p={3} bg="#E8E8E8" w="100%" h="100%" borderRadius="lg" overflowY="hidden">
-                        {loading ? (<Spinner size="xl" w={20} h={20} alignSelf="center" margin="auto"/>
+                    <Text fontSize={{ base: "28px", md: "30px" }} pb={3} px={2} w="100%" fontFamily="Work sans" display="flex" justifyContent={{ base: "space-between" }} alignItems="center">
+                        <IconButton display={{ base: "flex", md: "none" }} icon={<ArrowBackIcon />} onClick={() => setSelectedChat("")} />
+                        {!selectedChat.isGroupChat ? (
+                            <>
+                                {getSender(user, selectedChat.users)}
+                                <ProfileModal user={getSenderFull(user, selectedChat.users)} />
+                            </>
+                        ) : (
+                            <>
+                                {selectedChat.chatName.toUpperCase()}
+                                <UpdateGroupChatModal fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} fetchMessages={fetchMessages} />
+                            </>)}
+                    </Text>
+                    <Box display="flex" flexDir="column" justifyContent="flex-end" p={3} bg="#E8E8E8" w="100%" h="100%" borderRadius="lg" overflowY="hidden">
+                        {loading ? (<Spinner size="xl" w={20} h={20} alignSelf="center" margin="auto" />
                         ) : (
                             <div className="messages">
                                 <ScrollableChat messages={messages} />
-                            </div>) }
+                            </div>)}
                         <FormControl onKeyDown={sendMessage} isRequired mt={3}>
                             {isTyping ? (<div>Correspondent is typing...</div>) : (<></>)}
-                            <Input variant="filled" bg="#E0E0E0" placeholder="Enter a message..." onChange={typingHandler} value={newMessage || ''}/>
+                            <Input variant="filled" bg="#E0E0E0" placeholder="Enter a message..." onChange={typingHandler} value={newMessage || ''} />
                         </FormControl>
-                </Box>
-            </>
+                    </Box>
+                </>
             ) : (
                 <Box display="flex" alignItems="center" justifyContent="center" h="100%">
                     <Text fontSize="3xl" pb={3} fontFamily="Work sans">

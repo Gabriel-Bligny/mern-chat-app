@@ -11,15 +11,15 @@ function Login() {
     const [password, setPassword] = useState()
     const [loading, setLoading] = useState(false)
 
-    const handleClick = () => setShow(!show) 
-    const handleClickC = () => setShowC(!showC) 
+    const handleClick = () => setShow(!show)
+    const handleClickC = () => setShowC(!showC)
 
     const toast = useToast()
     const history = useHistory()
 
-    const submitHandler = async() => {
+    const submitHandler = async () => {
         setLoading(true)
-        if (!email || !password){
+        if (!email || !password) {
             toast({
                 title: "Please fill all the fields",
                 status: "warning",
@@ -31,14 +31,14 @@ function Login() {
             return;
         }
 
-        try{
+        try {
             const config = {
                 headers: {
                     "Content-type": "application/json"
                 }
             }
 
-            const { data } = await axios.post("/api/user/login", { email, password }, config)
+            const { data } = await axios.post("https://mern-chat-app-backend-22ov.onrender.com/api/user/login", { email, password }, config)
 
             toast({
                 title: "Login successful",
@@ -64,32 +64,32 @@ function Login() {
             setLoading(false)
         }
 
-     }
+    }
 
     return (
-    <VStack spacing='5px' color="black">
-        
-        <FormControl id='email' isRequired>
-            <FormLabel>Email</FormLabel>
-            <Input value={email} placeholder='Enter Your Email' onChange={(e) => setEmail(e.target.value)}/>
-        </FormControl>
+        <VStack spacing='5px' color="black">
 
-        <FormControl id='password' isRequired>
-            <FormLabel>Password</FormLabel>
-            <InputGroup>
-                <Input type={show ? "text" : "password"} placeholder='Enter Your Password' value={password} onChange={(e) => setPassword(e.target.value)}/>
-            <InputRightElement width="4.5rem">
-                <Button h="1.75rem" size="sm" onClick={handleClick}>{show ? "Hide" : "Show"}</Button>
-            </InputRightElement>
-            </InputGroup>
-        </FormControl>
+            <FormControl id='email' isRequired>
+                <FormLabel>Email</FormLabel>
+                <Input value={email} placeholder='Enter Your Email' onChange={(e) => setEmail(e.target.value)} />
+            </FormControl>
 
-        <Button colorScheme="blue" width="100%" style={{marginTop: 15}} onClick={submitHandler} isLoading={loading}>Login</Button>
-        
-        <Button colorScheme="red" width="100%" onClick={() => {setEmail("guest@example.com"); setPassword("123456")}}>Get Guest User Credentials</Button>
-        
-    </VStack>
-  )
+            <FormControl id='password' isRequired>
+                <FormLabel>Password</FormLabel>
+                <InputGroup>
+                    <Input type={show ? "text" : "password"} placeholder='Enter Your Password' value={password} onChange={(e) => setPassword(e.target.value)} />
+                    <InputRightElement width="4.5rem">
+                        <Button h="1.75rem" size="sm" onClick={handleClick}>{show ? "Hide" : "Show"}</Button>
+                    </InputRightElement>
+                </InputGroup>
+            </FormControl>
+
+            <Button colorScheme="blue" width="100%" style={{ marginTop: 15 }} onClick={submitHandler} isLoading={loading}>Login</Button>
+
+            <Button colorScheme="red" width="100%" onClick={() => { setEmail("guest@example.com"); setPassword("123456") }}>Get Guest User Credentials</Button>
+
+        </VStack>
+    )
 }
 
 export default Login
