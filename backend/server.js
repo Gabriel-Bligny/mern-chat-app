@@ -15,7 +15,7 @@ const app = express();
 
 app.use(express.json()); // to accept json data
 app.use(cors({
-  origin: 'https://mern-chat-app-backend-22ov.onrender.com'
+  origin: '*'
 }))
 
 // app.get("/", (req, res) => {
